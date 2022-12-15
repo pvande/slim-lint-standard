@@ -5,14 +5,15 @@ module SlimLint
   class Linter::Tab < Linter
     include LinterRegistry
 
-    MSG = 'Tab detected'
+    TAB_RE = /^( *)[\t ]*\t/
+    MSG = "Tab detected"
 
     on_start do |_sexp|
-      dummy_node = Struct.new(:line)
-      document.source_lines.each_with_index do |line, index|
-        next unless line =~ /^( *)[\t ]*\t/
+      document.source_lines.each.with_index(1) do |line, lineno|
+        next unless TAB_RE.match?(line)
 
-        report_lint(dummy_node.new(index + 1), MSG)
+        sexp = Sexp.new(:dummy, start: [lineno, 0], finish: [lineno, ($` ? $`.size : 0)])
+        report_lint(sexp, MSG)
       end
     end
   end

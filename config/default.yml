@@ -8,6 +8,9 @@
 skip_frontmatter: false
 
 linters:
+  AvoidMultilineExpressions:
+    enabled: true
+
   CommentControlStatement:
     enabled: true
 
@@ -17,6 +20,12 @@ linters:
 
   ControlStatementSpacing:
     enabled: true
+    space_after: always
+
+  DynamicOutputSpacing:
+    enabled: true
+    space_before: always
+    space_after: always
 
   EmbeddedEngines:
     enabled: false
@@ -33,18 +42,19 @@ linters:
     max: 300
 
   LineLength:
-    enabled: true
+    enabled: false
     max: 80
 
   RedundantDiv:
     enabled: true
 
   RuboCop:
-    enabled: true
+    enabled: false
     # These cops are incredibly noisy since the Ruby we extract from Slim
     # templates isn't well-formatted, so we ignore them.
     # WARNING: If you define this list in your own .slim-lint.yml file, you'll
     # be overriding the list defined here.
+    # TODO: Narrow this list to essentials.
     ignored_cops:
       - Layout/ArgumentAlignment
       - Layout/ArrayAlignment
@@ -82,6 +92,9 @@ linters:
       - Style/Next
       - Style/WhileUntilDo
       - Style/WhileUntilModifier
+
+  Standard:
+    enabled: true
 
   Tab:
     enabled: true

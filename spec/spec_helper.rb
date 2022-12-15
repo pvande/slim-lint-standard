@@ -1,19 +1,13 @@
 # frozen_string_literal: true
 
-if ENV['TRAVIS']
-  # When running in Travis, report coverage stats to Coveralls.
-  require 'coveralls'
-  Coveralls.wear!
-else
-  # Otherwise render coverage information in coverage/index.html and display
-  # coverage percentage in the console.
-  require 'simplecov'
-end
+# Render coverage information in coverage/index.html and display coverage
+# percentage in the console.
+require "simplecov"
 
-require 'slim_lint'
-require 'rspec/its'
+require "slim_lint"
+require "rspec/its"
 
-Dir[File.dirname(__FILE__) + '/support/**/*.rb'].sort.each { |f| require f }
+Dir[File.dirname(__FILE__) + "/support/**/*.rb"].sort.each { |f| require f }
 
 RSpec.configure do |config|
   config.include DirectorySpecHelpers

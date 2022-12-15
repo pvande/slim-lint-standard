@@ -1,11 +1,11 @@
 # frozen_string_literal: true
 
-require 'rake'
-require 'rake/tasklib'
-require 'slim_lint/constants'
+require "rake"
+require "rake/tasklib"
+require "slim_lint/constants"
 
 module SlimLint
-  # Rake task interface for slim-lint command line interface.
+  # Rake task interface for slim-lint-standard command line interface.
   #
   # @example
   #   # Add the following to your Rakefile...
@@ -14,7 +14,7 @@ module SlimLint
   #   SlimLint::RakeTask.new do |t|
   #     t.config = 'path/to/custom/slim-lint.yml'
   #     t.files = %w[app/views/**/*.slim custom/*.slim]
-  #     t.quiet = true # Don't display output from slim-lint
+  #     t.quiet = true # Don't display output from slim-lint-standard
   #   end
   #
   #   # ...and then execute from the command line:
@@ -48,8 +48,8 @@ module SlimLint
     # @return [Array<String>]
     attr_accessor :files
 
-    # Whether output from slim-lint should not be displayed to the standard out
-    # stream.
+    # Whether output from slim-lint-standard should not be displayed to the
+    # standard out stream.
     # @return [true,false]
     attr_accessor :quiet
 
@@ -58,7 +58,7 @@ module SlimLint
     # @param name [Symbol] task name
     def initialize(name = :slim_lint)
       @name = name
-      @files = ['.'] # Search for everything under current directory by default
+      @files = ["."] # Search for everything under current directory by default
       @quiet = false
 
       yield self if block_given?
@@ -74,8 +74,8 @@ module SlimLint
 
       task(name, [:files]) do |_task, task_args|
         # Lazy-load so task doesn't affect Rakefile load time
-        require 'slim_lint'
-        require 'slim_lint/cli'
+        require "slim_lint"
+        require "slim_lint/cli"
 
         run_cli(task_args)
       end
@@ -85,9 +85,9 @@ module SlimLint
     #
     # @param task_args [Rake::TaskArguments]
     def run_cli(task_args)
-      cli_args = ['--config', config] if config
+      cli_args = ["--config", config] if config
 
-      logger = quiet ? SlimLint::Logger.silent : SlimLint::Logger.new(STDOUT)
+      logger = quiet ? SlimLint::Logger.silent : SlimLint::Logger.new($stdout)
       result = SlimLint::CLI.new(logger).run(Array(cli_args) + files_to_lint(task_args))
 
       fail "#{SlimLint::APP_NAME} failed with exit code #{result}" unless result == 0
@@ -117,8 +117,8 @@ module SlimLint
     def default_description
       description = "Run `#{SlimLint::APP_NAME}"
       description += " --config #{config}" if config
-      description += " #{files.join(' ')}" if files.any?
-      description += ' [files...]`'
+      description += " #{files.join(" ")}" if files.any?
+      description += " [files...]`"
       description
     end
   end

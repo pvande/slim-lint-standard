@@ -57,7 +57,7 @@ module SlimLint
       begin
         document = SlimLint::Document.new(file_content, file: file_name, config: config)
       rescue SlimLint::Exceptions::ParseError => e
-        return [SlimLint::Lint.new(nil, file_name, e.lineno, e.error, :error)]
+        return [SlimLint::Lint.new(nil, file_name, SourceLocation.new(start_line: e.lineno), e.error, :error)]
       end
 
       linter_selector.linters_for_file(file_name).map do |linter|
@@ -73,7 +73,7 @@ module SlimLint
     # @return [Array<String>]
     def extract_applicable_files(config, options)
       included_patterns = options[:files]
-      excluded_patterns = config['exclude']
+      excluded_patterns = config["exclude"]
       excluded_patterns += options.fetch(:excluded_files, [])
 
       SlimLint::FileFinder.new(config).find(included_patterns, excluded_patterns)

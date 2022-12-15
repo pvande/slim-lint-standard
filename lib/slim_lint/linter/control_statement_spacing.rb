@@ -5,20 +5,28 @@ module SlimLint
   class Linter::ControlStatementSpacing < Linter
     include LinterRegistry
 
-    MESSAGE = 'Please add a space before and after the `=`'
+    on [:slim, :control] do |sexp|
+      expr = sexp.last[0]
+      expr_line, expr_col = sexp.start
+      line = document.source_lines[expr_line - 1][(expr_col - 1)..]
+      after_pattern, after_action = after_config
 
-    on [:html, :tag, anything, [],
-         [:slim, :output, anything, capture(:ruby, anything)]] do |sexp|
-      # Fetch original Slim code that contains an element with a control statement.
-      line = document.source_lines[sexp.line() - 1]
+      unless line.match?(after_pattern)
+        report_lint(expr, "Please #{after_action} the dash")
+      end
+    end
 
-      # Remove any Ruby code, because our regexp below must not match inside Ruby.
-      ruby = captures[:ruby]
-      line = line.sub(ruby, 'x')
-
-      next if line =~ /[^ ] ==?<?>? [^ ]/
-
-      report_lint(sexp, MESSAGE)
+    def after_config
+      @after_config ||= case config["space_after"]
+      when "never", false, nil
+        [/^ *-#?[^# ]/, "remove spaces after"]
+      when "always", "single", true
+        [/^ *-#? [^ ]/, "use one space after"]
+      when "ignore", "any"
+        [//, ""]
+      else
+        raise ArgumentError, "Unknown value for `space_after`; please use 'never' or 'always'"
+      end
     end
   end
 end

@@ -1,10 +1,12 @@
 # Linters
 
-Below is a list of linters supported by `slim-lint`, ordered alphabetically.
+Below is a list of linters supported by `slim-lint-standard`, ordered alphabetically.
 
+* [AvoidMultilineExpressions](#avoidmultilineexpressions)
 * [CommentControlStatement](#commentcontrolstatement)
 * [ConsecutiveControlStatements](#consecutivecontrolstatements)
 * [ControlStatementSpacing](#controlstatementspacing)
+* [DynamicOutputSpacing](#dynamicoutputspacing)
 * [EmbeddedEngines](#embeddedengines)
 * [EmptyControlStatement](#emptycontrolstatement)
 * [EmptyLines](#emptylines)
@@ -16,6 +18,44 @@ Below is a list of linters supported by `slim-lint`, ordered alphabetically.
 * [TagCase](#tagcase)
 * [TrailingBlankLines](#trailingblanklines)
 * [TrailingWhitespace](#trailingwhitespace)
+
+## AvoidMultilineExpressions
+
+Reports control statements, dynamic output expressions, dynamic attributes, and
+tag and attribute splats whose expressions span multiple lines.
+
+**Bad**
+```slim
+- method(1,
+    2,
+    3)
+```
+
+**Good**
+```slim
+ruby:
+  method(1,
+    2,
+    3)
+```
+
+**Good**
+```slim
+- method(1, 2, 3)
+```
+
+**Good**
+```slim
+tag(
+  id="my-id"
+  class="my-class"
+  title=my_tag_title
+)
+```
+
+Since Slim is such an indentation-sensitive, line-based template format, multiline expressions make templates harder to read and maintain.
+
+This linter notably ignores multiline attribute groups.
 
 ## CommentControlStatement
 
@@ -67,7 +107,30 @@ a smell. It is best to extract these into separate helpers whenever possible.
 
 ## ControlStatementSpacing
 
-Reports missing or superfluous spacing before and after control statements
+Option             | Default Value |
+-------------------|---------------|-------------------------------------
+`space_after`      | `single`      | `never`, `single`
+
+Reports missing or superfluous spacing after control statements
+
+**Bad**
+```slim
+-some_code
+```
+
+**Good**
+```slim
+- some_code
+```
+
+## DynamicOutputSpacing
+
+Option             | Default Value |
+-------------------|---------------|-------------------------------------
+`space_before`     | `single`      | `never`, `single`, `any`
+`space_after`      | `single`      | `never`, `single`, `any`
+
+Reports missing or superfluous spacing before and after dynamic output statements
 
 **Bad**
 ```slim
@@ -215,7 +278,7 @@ well-formatted.
 p Hello #{name}!
 ```
 
-**Output from `slim-lint`**
+**Output from `slim-lint-standard`**
 ```
 example.slim:2 [W] Useless assignment to variable - unused_variable
 ```
@@ -240,6 +303,11 @@ You can display the name of the cop by adding the following to your
 AllCops:
   DisplayCopNames: true
 ```
+
+## Standard
+
+This linter integrates with [Standard](https://github.com/testdouble/standard),
+which is a set of conventions built atop Rubocop.
 
 ## Tab
 

@@ -18,13 +18,7 @@ module SlimLint
     filter :RemoveBOM
 
     # Parse into S-expression using Slim parser
-    use Slim::Parser
-
-    # Converts Array-based S-expressions into SlimLint::Sexp objects
-    use SlimLint::Filters::SexpConverter
-
-    # Annotates Sexps with line numbers
-    use SlimLint::Filters::InjectLineNumbers
+    use SlimLint::Parser
 
     # Parses the given source code into a Sexp.
     #
@@ -34,11 +28,13 @@ module SlimLint
       call(source)
     rescue ::Slim::Parser::SyntaxError => e
       # Convert to our own exception type to isolate from upstream changes
-      error = SlimLint::Exceptions::ParseError.new(e.error,
-                                                   e.file,
-                                                   e.line,
-                                                   e.lineno,
-                                                   e.column)
+      error = SlimLint::Exceptions::ParseError.new(
+        e.error,
+        e.file,
+        e.line,
+        e.lineno,
+        e.column
+      )
       raise error
     end
   end

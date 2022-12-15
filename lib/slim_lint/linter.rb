@@ -38,7 +38,7 @@ module SlimLint
     #
     # @return [String]
     def name
-      self.class.name.split('::').last
+      self.class.name.split("::").last
     end
 
     private
@@ -47,12 +47,12 @@ module SlimLint
 
     # Record a lint for reporting back to the user.
     #
-    # @param node [#line] node to extract the line number from
+    # @param node [Sexp, Atom] node to extract the line number from
     # @param message [String] error/warning to display to the user
     def report_lint(node, message)
       return if disabled_for_line?(node.line)
 
-      @lints << SlimLint::Lint.new(self, @document.file, node.line, message)
+      @lints << SlimLint::Lint.new(self, @document.file, node.location, message)
     end
 
     # Parse Ruby code into an abstract syntax tree.
@@ -71,24 +71,23 @@ module SlimLint
     def disabled_lines
       @disabled_lines ||= begin
         currently_disabled = false
-        @document.source_lines.each_with_index.reduce([]) do |lines, pair|
+        @document.source_lines.each_with_index.each_with_object([]) do |pair, lines|
           line = pair[0]
           line_number = pair[1] + 1
 
-          if line =~ %r{/ slim-lint:disable #{linter_name}}
+          if line.match?(%r{/ slim-lint:disable #{linter_name}})
             currently_disabled = true
-          elsif line =~ %r{/ slim-lint:enable #{linter_name}}
+          elsif line.match?(%r{/ slim-lint:enable #{linter_name}})
             currently_disabled = false
           elsif currently_disabled
             lines << line_number
           end
-          lines
         end
       end
     end
 
     def linter_name
-      @linter_name ||= self.class.name.split('::').last
+      @linter_name ||= self.class.name.split("::").last
     end
   end
 end

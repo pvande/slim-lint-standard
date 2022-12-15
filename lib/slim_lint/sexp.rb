@@ -8,7 +8,15 @@ module SlimLint
   class Sexp < Array
     # Stores the line number of the code in the original document that
     # corresponds to this Sexp.
-    attr_accessor :line
+    attr_accessor :start, :finish
+
+    def line
+      start[0] if start
+    end
+
+    def column
+      start[1] if start
+    end
 
     # Creates an {Sexp} from the given {Array}-based Sexp.
     #
@@ -18,15 +26,28 @@ module SlimLint
     # treated similarly due to duck typing.
     #
     # @param array_sexp [Array]
-    def initialize(array_sexp)
+    def initialize(*array_sexp, start:, finish:)
+      @start = start
+      @finish = finish
       array_sexp.each do |atom_or_sexp|
         case atom_or_sexp
+        when Sexp, Atom
+          push atom_or_sexp
         when Array
-          push Sexp.new(atom_or_sexp)
+          push Sexp.new(*atom_or_sexp, start: start, finish: finish)
         else
-          push SlimLint::Atom.new(atom_or_sexp)
+          push SlimLint::Atom.new(atom_or_sexp, pos: start)
         end
       end
+    end
+
+    def location
+      SourceLocation.new(
+        start_line: start[0],
+        start_column: start[1],
+        last_line: (finish || start)[0],
+        last_column: (finish || start)[1]
+      )
     end
 
     # Returns whether this {Sexp} matches the given Sexp pattern.
@@ -65,6 +86,10 @@ module SlimLint
       true
     end
 
+    def to_array
+      map(&:to_array)
+    end
+
     # Returns pretty-printed representation of this S-expression.
     #
     # @return [String]
@@ -78,14 +103,17 @@ module SlimLint
     #
     # @param depth [Integer] indentation level to display Sexp at
     # @return [String]
-    def display(depth = 1) # rubocop:disable Metrics/AbcSize
-      indentation = ' ' * 2 * depth
-      output = '['.dup
+    def display(depth = 1)
+      indentation = " " * 2 * depth
+      range = +""
+      range << start.join(":") if start
+      range << " => " if start && finish
+      range << finish.join(":") if finish
+      output = "S(#{range})["
 
       each_with_index do |nested_sexp, index|
         output << "\n"
         output += indentation
-
         output +=
           if nested_sexp.is_a?(SlimLint::Sexp)
             nested_sexp.display(depth + 1)
@@ -94,11 +122,11 @@ module SlimLint
           end
 
         # Add trailing comma unless this is the last item
-        output += ',' if index < length - 1
+        output += ", " if index < length - 1
       end
 
-      output << "\n" << ' ' * 2 * (depth - 1) unless empty?
-      output << ']'
+      output << "\n" << " " * 2 * (depth - 1) unless empty?
+      output << "]"
 
       output
     end

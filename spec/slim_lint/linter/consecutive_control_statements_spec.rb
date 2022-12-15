@@ -1,12 +1,12 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require "spec_helper"
 
 describe SlimLint::Linter::ConsecutiveControlStatements do
-  include_context 'linter'
+  include_context "linter"
 
-  context 'when a single control statement exists' do
-    let(:slim) { <<-SLIM }
+  context "when a single control statement exists" do
+    let(:slim) { <<~SLIM }
       p Hello world
       - some_code
       a href="link"
@@ -15,8 +15,8 @@ describe SlimLint::Linter::ConsecutiveControlStatements do
     it { should_not report_lint }
   end
 
-  context 'when multiple consecutive control statements under the limit exist' do
-    let(:slim) { <<-SLIM }
+  context "when multiple consecutive control statements under the limit exist" do
+    let(:slim) { <<~SLIM }
       p Hello world
       - some_code
       - some_more_code
@@ -26,8 +26,8 @@ describe SlimLint::Linter::ConsecutiveControlStatements do
     it { should_not report_lint }
   end
 
-  context 'when multiple consecutive control statements over the limit exist' do
-    let(:slim) { <<-SLIM }
+  context "when multiple consecutive control statements over the limit exist" do
+    let(:slim) { <<~SLIM }
       p Hello world
       - some_code
       - some_more_code
@@ -38,8 +38,8 @@ describe SlimLint::Linter::ConsecutiveControlStatements do
     it { should report_lint line: 2 }
   end
 
-  context 'when multiple groups of consecutive control statements over the limit exist' do
-    let(:slim) { <<-SLIM }
+  context "when multiple groups of consecutive control statements over the limit exist" do
+    let(:slim) { <<~SLIM }
       p Hello world
       - some_code
       - some_more_code
@@ -54,8 +54,8 @@ describe SlimLint::Linter::ConsecutiveControlStatements do
     it { should report_lint line: 6 }
   end
 
-  context 'when a large if/elsif/else statement exists' do
-    let(:slim) { <<-SLIM }
+  context "when a large if/elsif/else statement exists" do
+    let(:slim) { <<~SLIM }
       p Hello world
       - if some_condition
         - some_code

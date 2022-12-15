@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
-require 'slim_lint/rake_task'
-require 'tempfile'
+require "spec_helper"
+require "slim_lint/rake_task"
+require "tempfile"
 
 describe SlimLint::RakeTask do
   before(:all) do
@@ -12,7 +12,7 @@ describe SlimLint::RakeTask do
   end
 
   let(:file) do
-    Tempfile.new(%w[slim-file .slim]).tap do |f|
+    Tempfile.new("slim_file.slim").tap do |f|
       f.write(slim)
       f.close
     end
@@ -25,18 +25,19 @@ describe SlimLint::RakeTask do
     end
   end
 
-  context 'when Slim document is valid' do
+  context "when Slim document is valid" do
     let(:slim) { "p Hello world\n" }
 
-    it 'executes without error' do
-      expect { run_task }.not_to raise_error
+    it "executes without error" do
+      run_task
+      # expect { run_task }.not_to raise_error
     end
   end
 
-  context 'when Slim document is invalid' do
-    let(:slim) { '%tag' }
+  context "when Slim document is invalid" do
+    let(:slim) { "%tag" }
 
-    it 'raises an error' do
+    it "raises an error" do
       expect { run_task }.to raise_error RuntimeError
     end
   end
