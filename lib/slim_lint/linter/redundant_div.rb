@@ -19,7 +19,7 @@ module SlimLint
       when "implicit", "never", false, nil
         report_lint(sexp[2], IMPLICIT_MESSAGE % name) if sexp[2] == "div"
       when "explicit", "always", true
-        report_lint(sexp[2], EXPLICIT_MESSAGE % name) unless sexp[2] == "div"
+        report_lint(sexp[2], EXPLICIT_MESSAGE % name) if sexp[2] =~ /[#.]/
       else
         raise ArgumentError, "Unknown value for `style`; please use 'implicit' or 'explicit'"
       end

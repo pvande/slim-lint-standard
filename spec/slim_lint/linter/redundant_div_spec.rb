@@ -120,6 +120,14 @@ describe SlimLint::Linter::RedundantDiv do
       it { should_not report_lint }
     end
 
+    context "when a non-div tag has a class attribute shortcut" do
+      let(:slim) { <<~SLIM }
+        aside.class Hello world
+      SLIM
+
+      it { should_not report_lint }
+    end
+
     context "when a div has an ID attribute shortcut" do
       let(:slim) { <<~SLIM }
         div#identifier Hello world
