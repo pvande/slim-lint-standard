@@ -238,21 +238,34 @@ Long lines are harder to read and usually indicative of complexity.
 
 ## RedundantDiv
 
-Reports explicit uses of `div` when it would otherwise be implicit.
+Option       | Default Value |
+-------------|---------------|-------------------------------------
+`style`      | `implicit`    | `implicit`, `explicit`
 
-**Bad: `div` is unnecessary when class/ID is specified**
+Reports on the use of `div` in conjunction with class and ID shortcuts.
+
+### When using `implicit` style
+
+**Bad**
 ```slim
 div.button
-```
-
-**Good: `div` is required when no class/ID is specified**
-```slim
-div
 ```
 
 **Good**
 ```slim
 .button
+```
+
+### When using `explicit` style
+
+**Bad**
+```slim
+.button
+```
+
+**Good**
+```slim
+div.button
 ```
 
 Slim was designed to be concise, and not embracing this makes the tool less
