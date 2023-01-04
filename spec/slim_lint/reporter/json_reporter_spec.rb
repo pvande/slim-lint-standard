@@ -52,7 +52,7 @@ describe SlimLint::Reporter::JsonReporter do
 
       let(:lints) do
         filenames.each_with_index.map do |filename, index|
-          location = SlimLint::SourceLocation.new(start_line: lines[index], start_column: index + 1, length: (index + 1) ** 2)
+          location = SlimLint::SourceLocation.new(start_line: lines[index], start_column: index + 1, length: (index + 1)**2)
           SlimLint::Lint.new(linters[index], filename, location, descriptions[index], severities[index])
         end
       end

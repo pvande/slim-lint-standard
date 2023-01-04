@@ -332,7 +332,7 @@ describe SlimLint::Parser do
           end
 
         doctype
-        SLIM
+      SLIM
 
       # While this parse tree *does* contain enough detail about line numbers
       # and spacing, the choice to lead each subsequent line with the previous
@@ -619,7 +619,7 @@ describe SlimLint::Parser do
                   :html, :tag, "p",
                   [:html, :attrs],
                   [:slim, :text, :inline, [:multi, [:slim, :interpolate, "Get a better browser."]]]
-                ],
+                ]
               ]
             ]
           ]
@@ -662,7 +662,6 @@ describe SlimLint::Parser do
           body
             | Text
         SLIM
-
 
         it do
           should officially_parse_as [
@@ -853,7 +852,7 @@ describe SlimLint::Parser do
                 [:slim, :interpolate, "  multiple"],
                 [:slim, :interpolate, "lines"]
               ]
-            ],
+            ]
           ]
         end
       end
@@ -879,7 +878,7 @@ describe SlimLint::Parser do
           should parse_as [
             :multi,
             [:slim, :text, :verbatim, [:multi, [:slim, :interpolate, "Text block"]]],
-            [:static, " "],
+            [:static, " "]
           ]
         end
       end
@@ -1218,7 +1217,8 @@ describe SlimLint::Parser do
             [
               :html, :tag, "table",
               [:html, :attrs, [:html, :attr, "id", [:static, "items"]]],
-              [:multi,
+              [
+                :multi,
                 [:newline],
                 [
                   :slim, :control, "for item in items do",
@@ -1261,7 +1261,8 @@ describe SlimLint::Parser do
             [
               :html, :tag, "table",
               [:html, :attrs, [:html, :attr, "id", [:static, "items"]]],
-              [:multi,
+              [
+                :multi,
                 [
                   :slim, :control, [:multi, [:code, "for item in items do"]],
                   [
@@ -1313,7 +1314,8 @@ describe SlimLint::Parser do
             [
               :html, :tag, "table",
               [:html, :attrs, [:html, :attr, "id", [:static, "items"]]],
-              [:multi,
+              [
+                :multi,
                 [:newline],
                 [
                   :slim, :control, "for item in items",
@@ -1356,7 +1358,8 @@ describe SlimLint::Parser do
             [
               :html, :tag, "table",
               [:html, :attrs, [:html, :attr, "id", [:static, "items"]]],
-              [:multi,
+              [
+                :multi,
                 [
                   :slim, :control, [:multi, [:code, "for item in items"]],
                   [
@@ -1539,7 +1542,7 @@ describe SlimLint::Parser do
           should officially_parse_as [
             :multi,
             [:static, " "],
-            [:slim, :output, true, "7*7", [:multi, [:newline]]],
+            [:slim, :output, true, "7*7", [:multi, [:newline]]]
           ]
         end
 
@@ -1744,7 +1747,8 @@ describe SlimLint::Parser do
         it do
           should officially_parse_as [
             :multi,
-            [:multi,
+            [
+              :multi,
               [:slim, :interpolate, "<html>"],
               [
                 :multi,
@@ -1792,14 +1796,15 @@ describe SlimLint::Parser do
                 ]
               ]
             ],
-            [:multi, [:slim, :interpolate, "</html>"], [:multi, [:newline]]],
+            [:multi, [:slim, :interpolate, "</html>"], [:multi, [:newline]]]
           ]
         end
 
         it do
           should parse_as [
             :multi,
-            [:multi,
+            [
+              :multi,
               [:slim, :interpolate, "<html>"],
               [
                 :multi,
@@ -1841,7 +1846,7 @@ describe SlimLint::Parser do
                 ]
               ]
             ],
-            [:multi, [:slim, :interpolate, "</html>"], [:multi]],
+            [:multi, [:slim, :interpolate, "</html>"], [:multi]]
           ]
         end
       end
@@ -1907,7 +1912,7 @@ describe SlimLint::Parser do
             [:html, :doctype, "basic"],
             [:newline],
             [:html, :doctype, "transitional"],
-            [:newline],
+            [:newline]
           ]
         end
 
@@ -1921,7 +1926,7 @@ describe SlimLint::Parser do
             [:html, :doctype, "frameset"],
             [:html, :doctype, "mobile"],
             [:html, :doctype, "basic"],
-            [:html, :doctype, "transitional"],
+            [:html, :doctype, "transitional"]
           ]
         end
       end
@@ -2027,7 +2032,7 @@ describe SlimLint::Parser do
                 [:html, :attr, "src", [:escape, true, [:slim, :interpolate, "image.png"]]]
               ],
               [:multi, [:newline]]
-            ],
+            ]
           ]
         end
 
@@ -2041,7 +2046,7 @@ describe SlimLint::Parser do
                 [:html, :attr, "src", [:escape, true, [:slim, :interpolate, "image.png"]]]
               ],
               [:multi]
-            ],
+            ]
           ]
         end
       end
@@ -2826,7 +2831,8 @@ describe SlimLint::Parser do
               ],
               [
                 :slim, :text, :inline,
-                [:multi, [:slim, :interpolate, "Link"], [:newline]]]
+                [:multi, [:slim, :interpolate, "Link"], [:newline]]
+              ]
             ],
             [:newline],
             [:newline],
@@ -2842,7 +2848,7 @@ describe SlimLint::Parser do
                 [:html, :attr, "itemtype", [:escape, true, [:slim, :interpolate, "http://schema.org/PostalAddress"]]]
               ],
               [:multi, [:newline]]
-            ],
+            ]
           ]
         end
 
@@ -2921,7 +2927,7 @@ describe SlimLint::Parser do
                 [:html, :attr, "id", [:escape, true, [:slim, :interpolate, "tagline"]]]
               ],
               [:slim, :text, :inline, [:multi, [:slim, :interpolate, "Tagline"]]]
-            ],
+            ]
           ]
         end
       end
@@ -2992,13 +2998,13 @@ describe SlimLint::Parser do
               :html, :tag, "a",
               [
                 :html, :attrs,
-                [:html, :attr, "href", [:escape, true, [:slim, :interpolate, 'http://#{url}']]]
+                [:html, :attr, "href", [:escape, true, [:slim, :interpolate, "http://\#{url}"]]]
               ],
               [
                 :slim, :text, :inline,
                 [
                   :multi,
-                  [:slim, :interpolate, 'Goto the #{url}']
+                  [:slim, :interpolate, "Goto the \#{url}"]
                 ]
               ]
             ],
@@ -3007,7 +3013,7 @@ describe SlimLint::Parser do
               :html, :tag, "a",
               [
                 :html, :attrs,
-                [:html, :attr, "href", [:escape, true, [:slim, :interpolate, '{"test"}']]],
+                [:html, :attr, "href", [:escape, true, [:slim, :interpolate, '{"test"}']]]
               ],
               [
                 :slim, :text, :inline,
@@ -3029,13 +3035,13 @@ describe SlimLint::Parser do
               :html, :tag, "a",
               [
                 :html, :attrs,
-                [:html, :attr, "href", [:escape, true, [:slim, :interpolate, 'http://#{url}']]]
+                [:html, :attr, "href", [:escape, true, [:slim, :interpolate, "http://\#{url}"]]]
               ],
               [
                 :slim, :text, :inline,
                 [
                   :multi,
-                  [:slim, :interpolate, 'Goto the #{url}']
+                  [:slim, :interpolate, "Goto the \#{url}"]
                 ]
               ]
             ],
@@ -3043,7 +3049,7 @@ describe SlimLint::Parser do
               :html, :tag, "a",
               [
                 :html, :attrs,
-                [:html, :attr, "href", [:escape, true, [:slim, :interpolate, '{"test"}']]],
+                [:html, :attr, "href", [:escape, true, [:slim, :interpolate, '{"test"}']]]
               ],
               [
                 :slim, :text, :inline,
@@ -3456,7 +3462,7 @@ describe SlimLint::Parser do
               :html, :tag, "input",
               [
                 :html, :attrs,
-                [:html, :attr, "type", [:escape, true, [:slim, :interpolate, "text"]]],
+                [:html, :attr, "type", [:escape, true, [:slim, :interpolate, "text"]]]
               ],
               [:multi, [:newline]]
             ],
@@ -3486,7 +3492,7 @@ describe SlimLint::Parser do
                 [:html, :attr, "disabled", [:slim, :attrvalue, true, "nil"]]
               ],
               [:multi, [:newline]]
-            ],
+            ]
           ]
         end
 
@@ -3506,7 +3512,7 @@ describe SlimLint::Parser do
               :html, :tag, "input",
               [
                 :html, :attrs,
-                [:html, :attr, "type", [:escape, true, [:slim, :interpolate, "text"]]],
+                [:html, :attr, "type", [:escape, true, [:slim, :interpolate, "text"]]]
               ],
               [:multi]
             ],
@@ -3536,7 +3542,7 @@ describe SlimLint::Parser do
                 [:html, :attr, "disabled", [:slim, :attrvalue, true, [:multi, [:code, "nil"]]]]
               ],
               [:multi]
-            ],
+            ]
           ]
         end
       end
@@ -3671,7 +3677,7 @@ describe SlimLint::Parser do
                 [:html, :attr, "class", [:slim, :attrvalue, true, [:multi, [:code, "classes"]]]]
               ],
               [:slim, :text, :inline, [:multi, [:slim, :interpolate, "Second"]]]
-            ],
+            ]
           ]
         end
       end
@@ -3875,30 +3881,30 @@ describe SlimLint::Parser do
         h1 Welcome #{user}!
       SLIM
 
-        it do
-          should officially_parse_as [
-            :multi,
-            [:slim, :control, "user=\"John Doe <john@doe.net>\"", [:multi, [:newline]]],
-            [
-              :html, :tag, "h1",
-              [:html, :attrs],
-              [:slim, :text, :inline, [:multi, [:slim, :interpolate, 'Welcome #{user}!']]]
-            ],
-            [:newline]
-          ]
-        end
+      it do
+        should officially_parse_as [
+          :multi,
+          [:slim, :control, "user=\"John Doe <john@doe.net>\"", [:multi, [:newline]]],
+          [
+            :html, :tag, "h1",
+            [:html, :attrs],
+            [:slim, :text, :inline, [:multi, [:slim, :interpolate, "Welcome \#{user}!"]]]
+          ],
+          [:newline]
+        ]
+      end
 
-        it do
-          should parse_as [
-            :multi,
-            [:slim, :control, [:multi, [:code, 'user="John Doe <john@doe.net>"']], [:multi]],
-            [
-              :html, :tag, "h1",
-              [:html, :attrs],
-              [:slim, :text, :inline, [:multi, [:slim, :interpolate, 'Welcome #{user}!']]]
-            ]
+      it do
+        should parse_as [
+          :multi,
+          [:slim, :control, [:multi, [:code, 'user="John Doe <john@doe.net>"']], [:multi]],
+          [
+            :html, :tag, "h1",
+            [:html, :attrs],
+            [:slim, :text, :inline, [:multi, [:slim, :interpolate, "Welcome \#{user}!"]]]
           ]
-        end
+        ]
+      end
     end
   end
 end

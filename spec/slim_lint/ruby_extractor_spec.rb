@@ -194,7 +194,7 @@ describe SlimLint::RubyExtractor do
 
       its(:source_map) do
         should contain_locations({
-          1 => {line: 1, column: 1, last_line: 1, last_column: 25},
+          1 => {line: 1, column: 1, last_line: 1, last_column: 25}
         })
       end
     end
@@ -211,7 +211,7 @@ describe SlimLint::RubyExtractor do
 
       its(:source_map) do
         should contain_locations({
-          1 => {line: 1, column: 1},
+          1 => {line: 1, column: 1}
         })
       end
     end
@@ -227,7 +227,7 @@ describe SlimLint::RubyExtractor do
 
       its(:source_map) do
         should contain_locations({
-          1 => {line: 1, column: 1, last_line: 1, last_column: 12},
+          1 => {line: 1, column: 1, last_line: 1, last_column: 12}
         })
       end
     end
@@ -245,7 +245,7 @@ describe SlimLint::RubyExtractor do
       its(:source_map) do
         should contain_locations({
           1 => {line: 1, column: 1, last_line: 1, last_column: 2},
-          2 => {line: 1, column: 3, last_line: 1, last_column: 14},
+          2 => {line: 1, column: 3, last_line: 1, last_column: 14}
         })
       end
     end
@@ -277,7 +277,7 @@ describe SlimLint::RubyExtractor do
           6 => {line: 1, column: 17, last_line: 1, last_column: 32},
           7 => {line: 1, column: 34, last_line: 1, last_column: 38},
           8 => {line: 1, column: 34 - 2 - 6, last_line: 1, last_column: 38 - 2 - 6},
-          9 => {line: 1, column: 34, last_line: 1, last_column: 38},
+          9 => {line: 1, column: 34, last_line: 1, last_column: 38}
         })
       end
     end
@@ -299,7 +299,7 @@ describe SlimLint::RubyExtractor do
           1 => {line: 1, column: 1, last_line: 1, last_column: 2},
           2 => {line: 1, column: 3, last_line: 1, last_column: 8},
           3 => {line: 1, column: 10 - 2, last_line: 1, last_column: 19 - 2},
-          4 => {line: 1, column: 3, last_line: 1, last_column: 8},
+          4 => {line: 1, column: 3, last_line: 1, last_column: 8}
         })
       end
     end
@@ -327,7 +327,7 @@ describe SlimLint::RubyExtractor do
           4 => {line: 1, column: 3, last_line: 1, last_column: 8},
           5 => {line: 1, column: 20, last_line: 1, last_column: 22},
           6 => {line: 1, column: 23 - 2, last_line: 1, last_column: 30 - 2},
-          7 => {line: 1, column: 20, last_line: 1, last_column: 22},
+          7 => {line: 1, column: 20, last_line: 1, last_column: 22}
         })
       end
     end
@@ -347,7 +347,7 @@ describe SlimLint::RubyExtractor do
         should contain_locations({
           1 => {line: 1, column: 1, last_line: 1, last_column: 1},
           2 => {line: 1, column: 2, last_line: 1, last_column: 18},
-          3 => {line: 1, column: 19, last_line: 1, last_column: 31},
+          3 => {line: 1, column: 19, last_line: 1, last_column: 31}
         })
       end
     end
@@ -368,7 +368,7 @@ describe SlimLint::RubyExtractor do
         should contain_locations({
           1 => {line: 1, column: 3, last_line: 1, last_column: 21},
           2 => {line: 2, column: 5 - 2, last_line: 2, last_column: 15 - 2},
-          3 => {line: 1, column: 1, last_line: 1, last_column: 1},
+          3 => {line: 1, column: 1, last_line: 1, last_column: 1}
         })
       end
     end
@@ -395,7 +395,7 @@ describe SlimLint::RubyExtractor do
           2 => {line: 2, column: 5 - 2, last_line: 2, last_column: 15 - 2},
           3 => {line: 3, column: 3, last_line: 3, last_column: 7},
           4 => {line: 4, column: 5 - 2, last_line: 4, last_column: 16 - 2},
-          5 => {line: 3, column: 1, last_line: 3, last_column: 1},
+          5 => {line: 3, column: 1, last_line: 3, last_column: 1}
         })
       end
     end
@@ -428,7 +428,7 @@ describe SlimLint::RubyExtractor do
           4 => {line: 4, column: 5 - 2, last_line: 4, last_column: 8 - 2},
           5 => {line: 5, column: 3, last_line: 5, last_column: 7},
           6 => {line: 6, column: 5 - 2, last_line: 6, last_column: 16 - 2},
-          7 => {line: 5, column: 1, last_line: 5, last_column: 1},
+          7 => {line: 5, column: 1, last_line: 5, last_column: 1}
         })
       end
     end
@@ -461,7 +461,7 @@ describe SlimLint::RubyExtractor do
           4 => {line: 4, column: 5 - 2, last_line: 4, last_column: 16 - 2},
           5 => {line: 3, column: 1, last_line: 3, last_column: 1},
           6 => {line: 5, column: 3, last_line: 5, last_column: 22},
-          7 => {line: 6, column: 3, last_line: 6, last_column: 20},
+          7 => {line: 6, column: 3, last_line: 6, last_column: 20}
         })
       end
     end
@@ -481,14 +481,13 @@ describe SlimLint::RubyExtractor do
         another_statement
       RUBY
 
-
       its(:source_map) do
         should contain_locations({
           1 => {line: 1, column: 1, last_line: 1, last_column: 3},
           2 => {line: 1, column: 3 - 2, last_line: 1, last_column: 14 - 2},
           3 => {line: 1, column: 1, last_line: 1, last_column: 3},
           4 => {line: 2, column: 3, last_line: 2, last_column: 17},
-          5 => {line: 3, column: 3, last_line: 3, last_column: 20},
+          5 => {line: 3, column: 3, last_line: 3, last_column: 20}
         })
       end
     end
@@ -514,7 +513,7 @@ describe SlimLint::RubyExtractor do
           2 => {line: 1, column: 3 - 2, last_line: 1, last_column: 17 - 2},
           3 => {line: 2, column: 3 - 2, last_line: 2, last_column: 17 - 2},
           4 => {line: 3, column: 3 - 2, last_line: 3, last_column: 16 - 2},
-          5 => {line: 1, column: 1, last_line: 3, last_column: 3},
+          5 => {line: 1, column: 1, last_line: 3, last_column: 3}
         })
       end
     end
@@ -536,7 +535,7 @@ describe SlimLint::RubyExtractor do
         should contain_locations({
           1 => {line: 1, column: 3, last_line: 1, last_column: 17},
           2 => {line: 2, column: 3, last_line: 2, last_column: 17},
-          3 => {line: 3, column: 3, last_line: 3, last_column: 16},
+          3 => {line: 3, column: 3, last_line: 3, last_column: 16}
         })
       end
     end
@@ -586,7 +585,7 @@ describe SlimLint::RubyExtractor do
           7 => {line: 12, column: 1, last_line: 16, last_column: 1},
           8 => {line: 17, column: 1, last_line: 17, last_column: 3},
           9 => {line: 17, column: 3 - 2, last_line: 17, last_column: 17 - 2},
-          10 => {line: 17, column: 1, last_line: 17, last_column: 3},
+          10 => {line: 17, column: 1, last_line: 17, last_column: 3}
         })
       end
     end
