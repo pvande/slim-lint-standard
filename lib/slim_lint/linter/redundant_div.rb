@@ -8,10 +8,10 @@ module SlimLint
 
     SHORTCUT_ATTRS = %w[id class]
     IMPLICIT_MESSAGE = "`div` is redundant when %s attribute shortcut is present"
-    EXPLICIT_MESSAGE = "explicit `div` is preferred over bare %s attribute"
+    EXPLICIT_MESSAGE = "explicit `div` is preferred over bare shorthand"
 
     on [:html, :tag, capture(:tag, anything), capture(:attrs, [:html, :attrs]), anything] do |sexp|
-      case @config["EnforcedStyle"]
+      case @config["style"]
       when "implicit", :implicit
         _, _, name, value = captures[:attrs][2]
         next unless captures[:tag] == "div"
@@ -21,7 +21,7 @@ module SlimLint
         report_lint(sexp[2], IMPLICIT_MESSAGE % name)
       when "explicit", :explicit
         next unless captures[:tag] == "." || captures[:tag] == "#"
-        report_lint(sexp[2], EXPLICIT_MESSAGE % captures[:tag])
+        report_lint(sexp[2], EXPLICIT_MESSAGE)
       end
     end
   end

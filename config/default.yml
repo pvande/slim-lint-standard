@@ -47,8 +47,7 @@ linters:
 
   RedundantDiv:
     enabled: true
-    EnforcedStyle: implicit
-    SupportedStyles: [implicit, explicit]
+    style: implicit
 
   RuboCop:
     enabled: false
