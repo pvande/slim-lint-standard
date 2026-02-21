@@ -41,6 +41,12 @@ linters:
     enabled: false
     max: 300
 
+  InstanceVariables:
+    enabled: false
+    include:
+      # Include only partial templates by default
+      - app/views/**/_*.html.slim
+
   LineLength:
     enabled: false
     max: 80
@@ -94,11 +100,28 @@ linters:
       - Style/WhileUntilDo
       - Style/WhileUntilModifier
 
+  QuoteConsistency:
+    enabled: false
+
   Standard:
     enabled: true
 
+  StrictLocalsMissing:
+    enabled: false
+    include:
+      # Include only Rails partial templates by default
+      - app/views/**/_*.html.slim
+
   Tab:
     enabled: true
+
+  Tag:
+    enabled: false
+    forbidden_tags: []
+
+  TagAttribute:
+    enabled: false
+    forbidden_attributes: []
 
   TagCase:
     enabled: true
@@ -108,3 +131,6 @@ linters:
 
   TrailingWhitespace:
     enabled: true
+
+  Zwsp:
+    enabled: false
