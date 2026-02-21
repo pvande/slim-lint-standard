@@ -859,6 +859,131 @@ describe SlimLint::Parser do
       end
     end
 
+    context "like `|<` and `|>`" do
+      context "the `|<` modifier adds a leading whitespace before the text block" do
+        # Expected differences: #1
+        let(:template) { <<~'SLIM' }
+          |< Text block
+        SLIM
+
+        it do
+          should officially_parse_as [
+            :multi,
+            [:static, " "],
+            [:slim, :text, :verbatim, [:multi, [:slim, :interpolate, "Text block"]]],
+            [:newline]
+          ]
+        end
+
+        it do
+          should parse_as [
+            :multi,
+            [:static, " "],
+            [:slim, :text, :verbatim, [:multi, [:slim, :interpolate, "Text block"]]]
+          ]
+        end
+      end
+
+      context "the `|>` modifier adds a trailing whitespace after the text block" do
+        # Expected differences: #1
+        let(:template) { <<~'SLIM' }
+          |> Text block
+        SLIM
+
+        it do
+          should officially_parse_as [
+            :multi,
+            [:slim, :text, :verbatim, [:multi, [:slim, :interpolate, "Text block"]]],
+            [:static, " "],
+            [:newline]
+          ]
+        end
+
+        it do
+          should parse_as [
+            :multi,
+            [:slim, :text, :verbatim, [:multi, [:slim, :interpolate, "Text block"]]],
+            [:static, " "]
+          ]
+        end
+      end
+
+      context "combining `|<>` adds both leading and trailing whitespace" do
+        # Expected differences: #1
+        let(:template) { <<~'SLIM' }
+          |<> Text block
+        SLIM
+
+        it do
+          should officially_parse_as [
+            :multi,
+            [:static, " "],
+            [:slim, :text, :verbatim, [:multi, [:slim, :interpolate, "Text block"]]],
+            [:static, " "],
+            [:newline]
+          ]
+        end
+
+        it do
+          should parse_as [
+            :multi,
+            [:static, " "],
+            [:slim, :text, :verbatim, [:multi, [:slim, :interpolate, "Text block"]]],
+            [:static, " "]
+          ]
+        end
+      end
+
+      context "combining `|><` (reversed) also adds both leading and trailing whitespace" do
+        # Expected differences: #1
+        let(:template) { <<~'SLIM' }
+          |>< Text block
+        SLIM
+
+        it do
+          should officially_parse_as [
+            :multi,
+            [:static, " "],
+            [:slim, :text, :verbatim, [:multi, [:slim, :interpolate, "Text block"]]],
+            [:static, " "],
+            [:newline]
+          ]
+        end
+
+        it do
+          should parse_as [
+            :multi,
+            [:static, " "],
+            [:slim, :text, :verbatim, [:multi, [:slim, :interpolate, "Text block"]]],
+            [:static, " "]
+          ]
+        end
+      end
+
+      context "the `|<` modifier does not affect the text indentation calculation" do
+        # Expected differences: #1, #5
+        let(:template) { <<~'SLIM' }
+          |<  indented text
+              more text
+        SLIM
+
+        it do
+          should parse_as [
+            :multi,
+            [:static, " "],
+            [
+              :slim, :text, :verbatim,
+              [
+                :multi,
+                [:slim, :interpolate, " indented text"],
+                [:slim, :interpolate, "more text"]
+              ]
+            ]
+          ]
+        end
+      end
+    end
+
     context "like `'`" do
       context "text blocks with trailing white space starts with the `'` as line indicator" do
         # Expected differences: #1
@@ -3862,6 +3987,81 @@ describe SlimLint::Parser do
               [:slim, :text, :inline, [:multi, [:slim, :interpolate, "text"]]]
             ]
           ]
+        end
+      end
+
+      context "Proc-based attribute shortcuts" do
+        subject do
+          SlimLint::Parser.new(
+            shortcut: {
+              "#" => {attr: "id"},
+              "." => {attr: "class"},
+              "@" => {attr: ->(v) { [["data-model", v]] }}
+            }
+          )
+        end
+
+        context "a single Proc shortcut produces the attributes returned by the Proc" do
+          let(:template) { "@user" }
+
+          it do
+            should parse_as [
+              :multi,
+              [
+                :html, :tag, "div",
+                [:html, :attrs, [:html, :attr, "data-model", [:static, "user"]]],
+                [:multi]
+              ]
+            ]
+          end
+        end
+
+        context "a Proc shortcut can return multiple attributes" do
+          subject do
+            SlimLint::Parser.new(
+              shortcut: {
+                "#" => {attr: "id"},
+                "." => {attr: "class"},
+                "^" => {attr: ->(v) { [["data-controller", v], ["data-action", "click->#{v}#handle"]] }}
+              }
+            )
+          end
+
+          let(:template) { "^search" }
+
+          it do
+            should parse_as [
+              :multi,
+              [
+                :html, :tag, "div",
+                [
+                  :html, :attrs,
+                  [:html, :attr, "data-controller", [:static, "search"]],
+                  [:html, :attr, "data-action", [:static, "click->search#handle"]]
+                ],
+                [:multi]
+              ]
+            ]
+          end
+        end
+
+        context "Proc shortcuts compose with regular array shortcuts" do
+          let(:template) { ".card@user" }
+
+          it do
+            should parse_as [
+              :multi,
+              [
+                :html, :tag, "div",
+                [
+                  :html, :attrs,
+                  [:html, :attr, "class", [:static, "card"]],
+                  [:html, :attr, "data-model", [:static, "user"]]
+                ],
+                [:multi]
+              ]
+            ]
+          end
         end
       end
     end
