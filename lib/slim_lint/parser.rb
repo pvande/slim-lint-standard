@@ -142,15 +142,17 @@ module SlimLint
       when /\A\//
         # Slim comment
         parse_comment_block
-      when /\A([|'])( ?)/
+      when /\A([|'])([<>]{1,2}(?: |\z)| ?)/
         # Found verbatim text block.
-        trailing_ws = ($1 == "'") && sexp(:static, " ", width: 1)
+        leading_ws = $2.include?("<")
+        trailing_ws = ($1 == "'") || $2.include?(">")
         text = sexp(:slim, :text, :verbatim)
         @line = $'
-        capture(text) { parse_text_block([:slim, :interpolate], @line, @indents.last + $2.size + 1) }
+        capture(text) { parse_text_block([:slim, :interpolate], @line, @indents.last + $2.count(" ") + 1) }
 
+        append sexp(:static, " ") if leading_ws
         append text
-        append trailing_ws if trailing_ws
+        append sexp(:static, " ") if trailing_ws
       when /\A</
         # Inline html
         block = sexp(:multi)
@@ -173,22 +175,19 @@ module SlimLint
 
         append statement
         push block
-      when /\A=(=?)(['<>]*)/
+      when /\A=(=?)([<>]*)/
         # Found an output block.
         # We expect the line to be broken or the next line to be indented.
         statement = sexp(:slim, :output, $1.empty?)
         @line = $'
-        trailing_ws = $2.include?(">".freeze)
-        if $2.include?("'".freeze)
-          deprecated_syntax "=' for trailing whitespace is deprecated in favor of =>"
-          trailing_ws = true
-        end
+        leading_ws = $2.include?("<")
+        trailing_ws = $2.include?(">")
 
         block = sexp(:multi)
         capture(statement) { parse_broken_line }
         statement << block
 
-        append sexp(:static, " ") if $2.include?("<".freeze)
+        append sexp(:static, " ") if leading_ws
         append statement
         append sexp(:static, " ") if trailing_ws
         push block
@@ -299,7 +298,11 @@ module SlimLint
         # The class/id attribute is :static instead of :slim :interpolate,
         # because we don't want text interpolation in .class or #id shortcut
         syntax_error!("Illegal shortcut") unless (shortcut = @attr_shortcut[$1])
-        shortcut.each { |a| attributes << sexp(:html, :attr, a, sexp(:static, $2)) }
+        if shortcut.is_a?(Proc)
+          shortcut.call($2).each { |a, v| attributes << sexp(:html, :attr, a, sexp(:static, v)) }
+        else
+          shortcut.each { |a| attributes << sexp(:html, :attr, a, sexp(:static, $2)) }
+        end
         if (additional_attr_pairs = @additional_attrs[$1])
           additional_attr_pairs.each do |k, v|
             attributes << sexp(:html, :attr, k.to_s, sexp(:static, v))
@@ -308,15 +311,10 @@ module SlimLint
         @line = $'
       end
 
-      @line =~ /\A[<>']*/
+      @line =~ /\A[<>]*/
       @line = $'
-      trailing_ws = $&.include?(">".freeze)
-      if $&.include?("'".freeze)
-        deprecated_syntax "tag' for trailing whitespace is deprecated in favor of tag>"
-        trailing_ws = true
-      end
-
-      leading_ws = $&.include?("<".freeze)
+      trailing_ws = $&.include?(">")
+      leading_ws = $&.include?("<")
 
       tag = sexp(:html, :tag, tag_name, attributes, start: tag_start, finish: pos)
       parse_attributes(attributes)
@@ -345,16 +343,12 @@ module SlimLint
           parse_tag($&, tag_start)
           pop
         end
-      when /\A\s*=(=?)(['<>]*)/
+      when /\A\s*=(=?)([<>]*)/
         # Handle output code
         statement = sexp(:slim, :output, $1 != "=")
 
         @line = $'
-        trailing_ws2 = $2.include?(">".freeze)
-        if $2.include?("'".freeze)
-          deprecated_syntax "=' for trailing whitespace is deprecated in favor of =>"
-          trailing_ws2 = true
-        end
+        trailing_ws2 = $2.include?(">")
         block = sexp(:multi)
         capture(statement) { parse_broken_line }
         statement << block
